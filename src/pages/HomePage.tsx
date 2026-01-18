@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Song } from '../types';
+import type { Song } from '../types';
 import { supabase } from '../lib/supabaseClient';
 import SongCard from '../components/SongCard';
 

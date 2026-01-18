@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from './Router';
-import { Song } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from '../hooks/useParams';
+import type { Song } from '../types';
 import { supabase } from '../lib/supabaseClient';
 import SongCard from '../components/SongCard';
 
@@ -9,13 +9,7 @@ const ProfilePage: React.FC = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (authorName) {
-      fetchAuthorSongs();
-    }
-  }, [authorName]);
-
-  const fetchAuthorSongs = async () => {
+  const fetchAuthorSongs = useCallback(async () => {
     try {
       const decodedName = decodeURIComponent(authorName || '');
       const { data, error } = await supabase
@@ -31,7 +25,13 @@ const ProfilePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [authorName]);
+
+  useEffect(() => {
+    if (authorName) {
+      fetchAuthorSongs();
+    }
+  }, [authorName, fetchAuthorSongs]);
 
   if (loading) {
     return <div className="loading">Loading profile...</div>;

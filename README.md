@@ -1,73 +1,185 @@
-# React + TypeScript + Vite
+# TOKA 🎵
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight, modern music-sharing platform built with React, TypeScript, Vite, and Supabase.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✅ **Music Streaming** - Upload and stream audio files (MP3, WAV)  
+✅ **Reactions** - Like songs with session-based tracking  
+✅ **Comments** - Engage with flat comments on each song  
+✅ **Profiles** - View songs by specific artists  
+✅ **Light/Dark Mode** - Seamless theme switching  
+✅ **No Auth Required** - Simple MVP without user authentication  
+✅ **Modern UI** - Clean, minimal design with Violet (#7C3AED) and Green (#22C55E) accents
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend**: React 19, TypeScript, Vite
+- **Backend**: Supabase (Database + Storage)
+- **Styling**: CSS Variables for theming
+- **State Management**: React Hooks
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+toka/
+├── src/
+│   ├── components/
+│   │   ├── CommentsModal.tsx    # Comments UI
+│   │   ├── Header.tsx            # App header with theme toggle
+│   │   ├── Router.tsx            # Simple client-side routing
+│   │   ├── SongCard.tsx          # Song display card
+│   │   └── UploadModal.tsx       # Upload song form
+│   ├── lib/
+│   │   └── supabaseClient.ts     # Supabase configuration
+│   ├── pages/
+│   │   ├── HomePage.tsx          # Main song feed
+│   │   └── ProfilePage.tsx       # Author profile
+│   ├── types/
+│   │   └── index.ts              # TypeScript interfaces
+│   ├── App.tsx                   # Main app component
+│   ├── main.tsx                  # Entry point
+│   └── index.css                 # Global styles
+├── DATABASE_SCHEMA.md            # SQL schema for Supabase
+├── .env                          # Environment variables
+└── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup Instructions
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Install Dependencies
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### 2. Configure Supabase
+
+Create a `.env` file in the root directory:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 3. Setup Database
+
+1. Go to your Supabase project dashboard
+2. Navigate to the SQL Editor
+3. Run the SQL commands from `DATABASE_SCHEMA.md`:
+   - Create `songs` table
+   - Create `comments` table
+   - Create `reactions` table
+
+### 4. Setup Storage
+
+1. Go to Storage in Supabase dashboard
+2. Create a new bucket named `songs`
+3. Make it **public** (for audio streaming)
+4. Apply the storage policies from `DATABASE_SCHEMA.md`
+
+### 5. Run Development Server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Usage
+
+### Uploading Songs
+
+1. Click "Upload Song" button in the header
+2. Fill in the song title and your name
+3. Select an audio file (MP3 or WAV, max 50MB)
+4. Click "Upload Song"
+
+### Listening to Music
+
+- Browse songs on the home page
+- Click play on any audio player
+- Like songs with the ❤️ button
+- Open comments with the 💬 button
+
+### Profiles
+
+- Click on any author name to view their profile
+- See all songs uploaded by that author
+
+### Theme Switching
+
+- Click the 🌙/☀️ button in the header
+- Theme preference is saved to localStorage
+
+## Color Palette
+
+- **Primary (Violet)**: `#7C3AED`
+- **Accent (Green)**: `#22C55E`
+- **Light Mode**:
+  - Background: `#F8FAFC`
+  - Card: `#FFFFFF`
+  - Text: `#0F172A`
+- **Dark Mode**:
+  - Background: `#0F172A`
+  - Card: `#1E293B`
+  - Text: `#E5E7EB`
+
+## TypeScript Types
+
+```typescript
+interface Song {
+  id: string;
+  title: string;
+  author_name: string;
+  audio_url: string;
+  created_at: string;
+}
+
+interface Comment {
+  id: string;
+  song_id: string;
+  author_name: string;
+  content: string;
+  created_at: string;
+}
+
+interface Reaction {
+  id: string;
+  song_id: string;
+  session_id: string;
+  created_at: string;
+}
+```
+
+## Future Enhancements
+
+- 🔐 User authentication
+- 📝 Playlists
+- 🔍 Search functionality
+- 🎨 Waveform visualization
+- 📱 Mobile app
+- 🔔 Notifications
+- 👥 Follow artists
+- 🎧 Queue management
+
+## Scripts
+
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
+```
+
+## License
+
+MIT
+
+## Contributing
+
+This is an MVP project. Feel free to fork and extend!
+
+---
+
+Built with ❤️ using React, TypeScript, and Supabase

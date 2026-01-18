@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Song, Comment } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import type { Song, Comment } from '../types';
 import { supabase } from '../lib/supabaseClient';
 
 interface CommentsModalProps {
@@ -14,11 +14,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ song, onClose, onCommentA
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchComments();
-  }, [song.id]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('comments')
@@ -31,7 +27,11 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ song, onClose, onCommentA
     } catch (error) {
       console.error('Error fetching comments:', error);
     }
-  };
+  }, [song.id]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

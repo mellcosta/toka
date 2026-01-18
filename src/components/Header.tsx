@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({ onUploadClick }) => {
   // Set initial theme
   React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-  }, []);
+  }, [theme]);
 
   return (
     <header>

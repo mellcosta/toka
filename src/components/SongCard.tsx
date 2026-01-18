@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Song } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import type { Song } from '../types';
 import { supabase } from '../lib/supabaseClient';
 import CommentsModal from './CommentsModal';
 
@@ -13,22 +13,16 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
   const [showComments, setShowComments] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
 
-  useEffect(() => {
-    fetchLikes();
-    fetchCommentCount();
-    checkIfLiked();
-  }, [song.id]);
-
-  const getSessionId = () => {
+  const getSessionId = useCallback(() => {
     let sessionId = localStorage.getItem('toka_session_id');
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       localStorage.setItem('toka_session_id', sessionId);
     }
     return sessionId;
-  };
+  }, []);
 
-  const fetchLikes = async () => {
+  const fetchLikes = useCallback(async () => {
     try {
       const { count, error } = await supabase
         .from('reactions')
@@ -40,9 +34,9 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
     } catch (error) {
       console.error('Error fetching likes:', error);
     }
-  };
+  }, [song.id]);
 
-  const fetchCommentCount = async () => {
+  const fetchCommentCount = useCallback(async () => {
     try {
       const { count, error } = await supabase
         .from('comments')
@@ -54,9 +48,9 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
     } catch (error) {
       console.error('Error fetching comment count:', error);
     }
-  };
+  }, [song.id]);
 
-  const checkIfLiked = async () => {
+  const checkIfLiked = useCallback(async () => {
     try {
       const sessionId = getSessionId();
       const { data, error } = await supabase
@@ -71,7 +65,13 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
     } catch (error) {
       console.error('Error checking like status:', error);
     }
-  };
+  }, [song.id, getSessionId]);
+
+  useEffect(() => {
+    fetchLikes();
+    fetchCommentCount();
+    checkIfLiked();
+  }, [fetchLikes, fetchCommentCount, checkIfLiked]);
 
   const toggleLike = async () => {
     try {
